@@ -6,7 +6,7 @@ PIP = $(RUN_PYTHON) -m pip
 
 .DEFAULT_GOAL := setup
 
-.PHONY: setup install install-dev install-gpu test test-contracts lint clean preflight demo demo-list hyperframes-doctor hyperframes-warm venv ensure-venv
+.PHONY: setup install install-dev install-gpu install-performance test test-contracts lint clean preflight demo demo-list hyperframes-doctor hyperframes-warm venv ensure-venv
 
 # ---- Virtual environment ----
 
@@ -86,6 +86,10 @@ install-dev: ensure-venv
 install-gpu: ensure-venv
 	$(PIP) install -r requirements-gpu.txt
 	$(PIP) install diffusers transformers accelerate
+
+install-performance: ensure-venv
+	$(PIP) install mediapipe opencv-python-headless
+	$(RUN_PYTHON) -c "from tools.performance.performance_capture import PerformanceCapture; r=PerformanceCapture().execute({'operation':'download_models'}); print(r.data if r.success else r.error)"
 
 # ---- Testing ----
 
